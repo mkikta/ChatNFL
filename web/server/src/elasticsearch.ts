@@ -1,0 +1,1 @@
+// All elasticsearch calls and types should go here
