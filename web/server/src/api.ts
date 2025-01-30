@@ -1,6 +1,6 @@
 import express from 'express';
 import { validate, Joi } from "express-validation";
-import { QuerySchema } from "@shared/QueryShema";
+import { QuerySchema } from "@shared/QuerySchema";
 
 const api = express.Router();
 
@@ -9,32 +9,32 @@ const playerNameValidation = Joi.string().pattern(/^([0-9]{1,2}-)?[A-Za-z]+.[A-Z
 
 const queryValidator = {
   body: Joi.object({
-    offense_team: teamNameValidation.optional(),
-    offense_players: Joi.array().items(playerNameValidation).max(12).required(),
-    defense_team: teamNameValidation.optional(),
-    defense_players: Joi.array().items(playerNameValidation).max(12).required(),
+    offenseTeam: teamNameValidation.optional(),
+    offensePlayers: Joi.array().items(playerNameValidation).max(12).required(),
+    defenseTeam: teamNameValidation.optional(),
+    defensePlayers: Joi.array().items(playerNameValidation).max(12).required(),
 
-    play_type: Joi.string().valid('pass', 'run').required(),
+    playType: Joi.string().valid('pass', 'run').required(),
 
     // Information related to throws
-    pass_data: Joi.alternatives().conditional('play_type', {
+    passData: Joi.alternatives().conditional('playType', {
       is: 'pass',
       then: Joi.object({
-        passing_player: Joi.string().optional(),
-        receiving_player: Joi.string().optional(),
-        pass_length: Joi.string().optional(),
-        pass_location: Joi.string().optional(),
+        passingPlayer: Joi.string().optional(),
+        receivingPlayer: Joi.string().optional(),
+        passLength: Joi.string().optional(),
+        passLocation: Joi.string().optional(),
       }).required(),
       otherwise: Joi.forbidden()
     }),
     
     // Information related to runs
-    run_data: Joi.alternatives().conditional('play_type', {
+    runData: Joi.alternatives().conditional('playType', {
       is: 'run',
       then: Joi.object({
-        rushing_player: Joi.string().optional(),
-        run_location: Joi.string().optional(),
-        run_gap: Joi.string().optional(),
+        rushingPlayer: Joi.string().optional(),
+        runLocation: Joi.string().optional(),
+        runGap: Joi.string().optional(),
       }).required(),
       otherwise: Joi.forbidden()
     }),
