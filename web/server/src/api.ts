@@ -14,6 +14,10 @@ const queryValidator = {
     defenseTeam: teamNameValidation.optional(),
     defensePlayers: Joi.array().items(playerNameValidation).max(12).required(),
 
+    ballLocation: Joi.number().min(0).max(100).optional(),
+    currentDown: Joi.number().min(1).max(4).optional(),
+    gameSecondsLeft: Joi.number().min(0).max(3600).optional(),
+
     playType: Joi.string().valid('pass', 'run').required(),
 
     // Information related to throws

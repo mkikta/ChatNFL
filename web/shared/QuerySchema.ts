@@ -3,6 +3,9 @@ export interface QuerySchema {
   defenseTeam?: string,
   offensePlayers: string[],
   defensePlayers: string[],
+  ballLocation?: number|null,
+  currentDown?: number|null,
+  gameSecondsLeft?: number|null,
   playType: string,
   passData?: {
     passingPlayer?: string,

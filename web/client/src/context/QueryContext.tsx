@@ -10,6 +10,9 @@ interface QueryContext {
   setOffensePlayers: SetStateCallback<string[]>,
   setDefensePlayers: SetStateCallback<string[]>,
   setPlayType: SetStateCallback<string>,
+  setBallLocation: SetStateCallback<number|null>,
+  setCurrentDown: SetStateCallback<number|null>,
+  setGameSecondsLeft: SetStateCallback<number|null>,
   setPassingPlayer: SetStateCallback<string>,
   setReceivingPlayer: SetStateCallback<string>,
   setPassLength: SetStateCallback<string>,
@@ -25,6 +28,10 @@ interface QueryContextProviderProps {
   children?: React.ReactNode
 }
 
+const numberOrUndefined = (val : number|null) => {
+  return (val == null) ? undefined : val
+}
+
 const QueryContextProvider = ({children} : QueryContextProviderProps) => {
   const [offenseTeam, setOffenseTeam] = useState<string>("");
   const [defenseTeam, setDefenseTeam] = useState<string>("");
@@ -38,6 +45,10 @@ const QueryContextProvider = ({children} : QueryContextProviderProps) => {
   const [rushingPlayer, setRushingPlayer] = useState<string>("");
   const [runLocation, setRunLocation] = useState<string>("");
   const [runGap, setRunGap] = useState<string>("");
+  const [ballLocation, setBallLocation] = useState<number|null>(null);
+  const [currentDown, setCurrentDown] = useState<number|null>(null);
+  const [gameSecondsLeft, setGameSecondsLeft] = useState<number|null>(null);
+
   const data = useMemo<QuerySchema>(() => ({
     offenseTeam, defenseTeam, offensePlayers, defensePlayers, playType,
     passData: (playType == "pass") ? {
@@ -46,6 +57,9 @@ const QueryContextProvider = ({children} : QueryContextProviderProps) => {
     runData: (playType == "run") ? {
       rushingPlayer, runLocation, runGap
     } : undefined,
+    ballLocation: numberOrUndefined(ballLocation),
+    currentDown: numberOrUndefined(currentDown),
+    gameSecondsLeft: numberOrUndefined(gameSecondsLeft),
   }), [offenseTeam, defenseTeam, offensePlayers, defensePlayers, playType, passingPlayer, receivingPlayer, passLength, passLocation, rushingPlayer, runLocation, runGap])
   
   return (
@@ -63,6 +77,9 @@ const QueryContextProvider = ({children} : QueryContextProviderProps) => {
       setRushingPlayer,
       setRunLocation,
       setRunGap,
+      setBallLocation,
+      setCurrentDown,
+      setGameSecondsLeft,
     }}>
       {children}
     </QueryContext.Provider>
