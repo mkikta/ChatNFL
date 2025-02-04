@@ -25,53 +25,51 @@ def combine_folder(folder):
   data = []
   for file in files:
     data.extend(read_csv(f'{folder}/{file}'))
-    break
   return data
+
+def try_load_data(client, index, data):
+  try:
+    print(f'Loading {index} data...')
+    helpers.bulk(client, data, index=index)
+  except Exception as _:
+    print(f'Failed to load {index} data.')
+    return
+  print(f'Successfully loaded {index} data.')
 
 if __name__ == '__main__':
   try:
-    client = Elasticsearch("http://localhost:9200", verify_certs=False, basic_auth=ELASTIC_AUTH)
+    client = Elasticsearch('http://localhost:9200', verify_certs=False, basic_auth=ELASTIC_AUTH)
   except Exception as e:
-    print("Failed to authenticate elasticsearch.")
-    print("Make sure elasticsearch is running and set ELASTIC_AUTH with your password.")
+    print('Failed to authenticate elasticsearch.')
+    print('Make sure elasticsearch is running and set ELASTIC_AUTH with your password.')
     exit()
 
   # delete indices first
   try:
-    print("Clearing current data...")
-    client.indices.delete(index='pbp', ignore_unavailable=True)
-    client.indices.delete(index='pbp_participation', ignore_unavailable=True)
-    client.indices.delete(index='players', ignore_unavailable=True)
+    print('Clearing current data...')
+    client.indices.delete(index=['pbp', 'players'], ignore_unavailable=True)
   except Exception as e:
-    print("Failed to clear existing data.")
+    print('Failed to clear existing data.')
     exit()
 
-  # read data/pbp
-  try:
-    print("Loading data/pbp files...")
-    data = combine_folder('data/pbp')
-    helpers.bulk(client, data, index='pbp')
-  except Exception as e:
-    print("Failed to load data/pbp files.")
-    exit()
-  print("Successfully loaded data/pbp files.")
+  # load data/pbp and data/pbp_participation
+  print('Merging pbp and pbp_participation data...')
+  pbp_data = combine_folder('data/pbp')
+  par_data = combine_folder('data/pbp_participation')
+  par_mapping = {}
+  for row in par_data:
+    key = (row['nflverse_game_id'], row['play_id'])
+    del row['nflverse_game_id']
+    del row['play_id']
+    par_mapping[key] = row
+  merged_pbp = []
+  for row in pbp_data:
+    key = (row['game_id'], row['play_id'])
+    if key in par_mapping:
+      row.update(par_mapping[key])
+      merged_pbp.append(row)
+  print(f"Successfully merged {len(merged_pbp)} rows.")
+  try_load_data(client, 'pbp', merged_pbp)
 
-  # read data/pbp_participation
-  try:
-    print("Loading data/pbp_participation files...")
-    data = combine_folder('data/pbp_participation')
-    helpers.bulk(client, data, index='pbp_participation')
-  except Exception as e:
-    print("Failed to load data/pbp_participation files.")
-    exit()
-  print("Successfully loaded data/pbp_participation files.")
-
-  # read data/players.csv
-  try:
-    print("Loading data/players.csv data...")
-    data = read_csv('data/players.csv')
-    helpers.bulk(client, data, index='players')
-  except Exception as e:
-    print("Failed to load data/players.csv data.")
-    exit()
-  print("Successfully loaded data/players.csv data.")
+  # load data/players.csv
+  try_load_data(client, 'players', read_csv('data/players.csv'))
