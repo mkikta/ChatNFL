@@ -1,7 +1,9 @@
+import 'dotenv/config'
 import express, { ErrorRequestHandler } from 'express';
 import api from './api';
 import bodyParser from 'body-parser';
 import { ValidationError } from 'express-validation';
+import './elasticsearch';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -16,7 +18,7 @@ app.get('/', (req, res) => {
   // For development, simply run both the backend and frontend individually
 });
 
-const errorHandler : ErrorRequestHandler = (err, req, res, next) => {
+const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   if (err instanceof ValidationError) {
     res.status(err.statusCode).json(err);
   } else {
