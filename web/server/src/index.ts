@@ -3,13 +3,11 @@ import express, { ErrorRequestHandler } from 'express';
 import api from './api';
 import bodyParser from 'body-parser';
 import { ValidationError } from 'express-validation';
-import client from './elasticsearch';
+import './elasticsearch';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 console.log('Hello World')
-
-const c = client;
 
 app.use(bodyParser.json());
 
