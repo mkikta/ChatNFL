@@ -1,6 +1,7 @@
 import express from 'express';
 import { validate, Joi } from "express-validation";
 import { QuerySchema } from "@shared/QueryShema";
+import requestData from "./elasticsearch";
 
 const api = express.Router();
 
@@ -27,7 +28,7 @@ const queryValidator = {
       }).required(),
       otherwise: Joi.forbidden()
     }),
-    
+
     // Information related to runs
     run_data: Joi.alternatives().conditional('play_type', {
       is: 'run',
@@ -41,22 +42,24 @@ const queryValidator = {
   })
 };
 
-api.post('/v1', 
-  
+api.post('/v1',
+
   // @ts-ignore
   validate(queryValidator),
-  
+
   (req, res) => {
-  const data = req.body as QuerySchema
-  console.log(data);
-  
-  // TODO: Request context from ElasticSearch
+    const data = req.body as QuerySchema
+    console.log(data);
 
-  // TODO: Feed content to LLM model
+    // TODO: Request context from ElasticSearch
+    requestData(data);
 
-  // Return information to user
-  let result = "Not Yet Implemented";
-  res.status(200).send(result);
-})
+    // TODO: Feed content to LLM model
+
+    // Return information to user
+    let result = "Not Yet Implemented";
+    res.status(200).send(result);
+  }
+)
 
 export default api;
