@@ -1,1 +1,20 @@
-// All LLM calls and types should go here
+import { GoogleGenerativeAI } from "@google/generative-ai";
+require('dotenv').config();
+
+
+const API_KEY: string = process.env.API_KEY ?? ""
+const genAI = new GoogleGenerativeAI(API_KEY)
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" })
+const prompt = "Write a haiku about recursion in programming."
+
+async function getResult(prompt: string) {
+    const result = await model.generateContent(prompt)
+    return result
+}
+
+async function main() {
+    const result = await getResult(prompt)
+    console.log(result.response.text())
+}
+
+main()
