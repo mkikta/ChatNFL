@@ -1,16 +1,48 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Button, Grid2, Stack, Typography } from "@mui/material";
+import PlayerList from "./PlayerListInput";
+import TeamInput from "./TeamInput";
+import BallState from "./GameStateForm";
+import ChosenPlayForm from "./ChosenPlayForm";
+import { QueryContext } from "../context/QueryContext";
+import { useContext } from "react";
+import queryPlay from "../requests/playRequest";
+import { ResponseContext } from "../context/ResponseContext";
 
 
 const Form = () => {
+  const queryContext = useContext(QueryContext);
+  const responseContext = useContext(ResponseContext);
   return (
   <Stack direction="column" justifyContent="space-between" alignContent="center" height="100%">
-    <Typography textAlign={"center"} variant="h1">
+    <Typography textAlign={"center"} variant="h2">
       ChatNFL
     </Typography>
-    <Box ></Box>
-    <Stack direction="column" alignContent="center">
-      
-      <Button>Generate</Button>
+    <Stack direction="column" alignContent="center" spacing={3}>
+      <Grid2 container>
+        <Grid2 size={6}>
+          <TeamInput offense={true}/>
+        </Grid2>
+        <Grid2 size={6}>
+          <TeamInput offense={false}/>
+        </Grid2>
+      </Grid2>
+      <Grid2 container>
+        <Grid2 size={6}>
+          <PlayerList offense={true}/>
+        </Grid2>
+        <Grid2 size={6}>
+          <PlayerList offense={false}/>
+        </Grid2>
+      </Grid2>
+      <BallState />
+      <ChosenPlayForm />
+      <Button
+        variant="contained"
+        onClick={async () => {
+          const response = await queryPlay(queryContext?.data!);
+          responseContext?.setResponse(response);
+        }}
+      >Generate</Button>
     </Stack>
   </Stack>
   );

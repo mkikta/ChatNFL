@@ -1,11 +1,14 @@
 import express from 'express';
 import { validate, Joi } from "express-validation";
 import { QuerySchema } from "@shared/QuerySchema";
+import TEAMS from "@shared/Teams";
+import PLAYERS from "@shared/Players";
+import { ActionLocation, PassLength, RunGap } from '@shared/PlayEnums';
 
 const api = express.Router();
 
-const teamNameValidation = Joi.string().pattern(/^[A-Z]+$/).min(2).max(3);
-const playerNameValidation = Joi.string().pattern(/^([0-9]{1,2}-)?[A-Za-z]+.[A-Za-z\-]+$/);
+const teamNameValidation = Joi.string().valid(...TEAMS.map(team => team.shortName));
+const playerNameValidation = Joi.string().valid(...PLAYERS.map(player => player.id));
 
 const queryValidator = {
   body: Joi.object({
@@ -16,6 +19,7 @@ const queryValidator = {
 
     ballLocation: Joi.number().min(0).max(100).optional(),
     currentDown: Joi.number().min(1).max(4).optional(),
+    downDistance: Joi.number().min(0).max(100).optional(),
     gameSecondsLeft: Joi.number().min(0).max(3600).optional(),
 
     playType: Joi.string().valid('pass', 'run').required(),
@@ -24,10 +28,10 @@ const queryValidator = {
     passData: Joi.alternatives().conditional('playType', {
       is: 'pass',
       then: Joi.object({
-        passingPlayer: Joi.string().optional(),
-        receivingPlayer: Joi.string().optional(),
-        passLength: Joi.string().optional(),
-        passLocation: Joi.string().optional(),
+        passingPlayer: playerNameValidation.optional(),
+        receivingPlayer: playerNameValidation.optional(),
+        passLength: Joi.string().valid(...Object.values(PassLength)).optional(),
+        passLocation: Joi.string().valid(...Object.values(ActionLocation)).optional(),
       }).required(),
       otherwise: Joi.forbidden()
     }),
@@ -36,9 +40,9 @@ const queryValidator = {
     runData: Joi.alternatives().conditional('playType', {
       is: 'run',
       then: Joi.object({
-        rushingPlayer: Joi.string().optional(),
-        runLocation: Joi.string().optional(),
-        runGap: Joi.string().optional(),
+        rushingPlayer: playerNameValidation.optional(),
+        runLocation: Joi.string().valid(...Object.values(ActionLocation)).optional(),
+        runGap: Joi.string().valid(...Object.values(RunGap)).optional(),
       }).required(),
       otherwise: Joi.forbidden()
     }),

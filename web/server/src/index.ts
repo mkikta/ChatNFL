@@ -1,3 +1,4 @@
+import 'module-alias/register';
 import express, { ErrorRequestHandler } from 'express';
 import api from './api';
 import bodyParser from 'body-parser';

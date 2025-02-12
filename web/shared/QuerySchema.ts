@@ -1,3 +1,5 @@
+import { PlayType, PassLength, ActionLocation, RunGap } from "./PlayEnums";
+
 export interface QuerySchema {
   offenseTeam?: string,
   defenseTeam?: string,
@@ -5,17 +7,18 @@ export interface QuerySchema {
   defensePlayers: string[],
   ballLocation?: number|null,
   currentDown?: number|null,
+  downDistance?: number|null,
   gameSecondsLeft?: number|null,
-  playType: string,
+  playType: PlayType,
   passData?: {
     passingPlayer?: string,
     receivingPlayer?: string,
-    passLength?: string,
-    passLocation?: string,
+    passLength?: PassLength,
+    passLocation?: ActionLocation,
   },
   runData?: {
     rushingPlayer?: string,
-    runLocation?: string,
-    runGap?: string,
+    runLocation?: ActionLocation,
+    runGap?: RunGap,
   }
 };
