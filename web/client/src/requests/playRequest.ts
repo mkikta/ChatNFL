@@ -1,13 +1,13 @@
-import { QuerySchema } from "@shared/QueryShema";
+import { QuerySchema } from "@shared/QuerySchema";
 import axios from "axios"
 
 // Eventually remove this.
 export async function sendMockRequest() {
   const exampleSchema : QuerySchema = {
-    offense_players: [],
-    defense_players: [],
-    play_type: "pass",
-    pass_data: {},
+    offensePlayers: [],
+    defensePlayers: [],
+    playType: "pass",
+    passData: {},
   };
   return await queryPlay(exampleSchema);
 }
