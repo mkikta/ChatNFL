@@ -3,7 +3,7 @@ import csv
 from elasticsearch import Elasticsearch, helpers
 
 # CHANGE THE SECOND STRING HERE TO YOUR PASSWORD FROM elastic-start-local/.env
-ELASTIC_AUTH = ('elastic', 'epyj1jgu')
+ELASTIC_AUTH = ('elastic', 'Sy119GAl')
 EXCLUDE_COLUMNS = ['old_game_id']
 MIN_YEAR = 2020
 
@@ -32,7 +32,7 @@ def try_load_data(client, index, data):
 		print(f'Loading {index} data...')
 		helpers.bulk(client, data, index=index)
 	except Exception as _:
-		print(f'Failed to load {index} data.')
+		print(f'Failed to load {index} data.', _)
 		return
 	print(f'Successfully loaded {index} data.')
 
@@ -47,9 +47,9 @@ if __name__ == '__main__':
 	# delete indices first
 	try:
 		print('Clearing current data...')
-		client.indices.delete(index=['pbp', 'players'], ignore_unavailable=True)
+		response = client.indices.delete(index=['pbp', 'players'], ignore_unavailable=True)
 	except Exception as e:
-		print('Failed to clear existing data.')
+		print('Failed to clear existing data: ', e)
 		exit()
 
 	# load data/pbp and data/pbp_participation

@@ -1,12 +1,32 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-require('dotenv').config();
 
 
-const API_KEY: string = process.env.API_KEY ?? ""
+const API_KEY: string = process.env.GEMINI_API_KEY as string
 const genAI = new GoogleGenerativeAI(API_KEY)
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" })
 
-function getPrompt(): string{
+function getElasticSearchData() {
+
+}
+
+function transformPrompt(){
+
+}
+
+function getLlmResponse(){
+
+}
+
+function transformResponse(){
+
+}
+
+function sendResponse(){
+    
+}
+
+
+function getPrompt(): string {
     return "Write a haiku about recursion in programming."
 }
 
