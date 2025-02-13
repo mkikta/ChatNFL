@@ -5,6 +5,7 @@ import { QuerySchema } from "@shared/QuerySchema";
 import TEAMS from "@shared/Teams";
 import PLAYERS from "@shared/Players";
 import { ActionLocation, PassLength, RunGap } from '@shared/PlayEnums';
+import completeChat from './model';
 
 const api = express.Router();
 
@@ -63,10 +64,10 @@ api.post('/v1',
     requestData(data);
 
     // TODO: Feed content to LLM model
+    let response = completeChat("What is football?", [""]);
 
     // Return information to user
-    let result = "Not Yet Implemented";
-    res.status(200).send(result);
+    res.status(200).send(response);
   }
 )
 
