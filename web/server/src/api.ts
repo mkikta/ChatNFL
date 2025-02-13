@@ -56,7 +56,7 @@ api.post('/v1',
   // @ts-ignore
   validate(queryValidator),
 
-  (req, res) => {
+  async (req, res) => {
     const data = req.body as QuerySchema
     console.log(data);
 
@@ -64,8 +64,9 @@ api.post('/v1',
     requestData(data);
 
     // TODO: Feed content to LLM model
-    let response = completeChat("What is football?", [""]);
-
+    let response = await completeChat("What is football?", [""]);
+    console.log(response);
+    response = response.substring(response.indexOf("</think>")+8);
     // Return information to user
     res.status(200).send(response);
   }
