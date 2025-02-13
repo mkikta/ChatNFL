@@ -1,3 +1,4 @@
+import 'module-alias/register';
 import 'dotenv/config'
 import express, { ErrorRequestHandler } from 'express';
 import api from './api';

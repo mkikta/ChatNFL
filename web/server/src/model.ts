@@ -23,3 +23,5 @@ async function completeChat(question: string, context: [string], model: string =
     });
     return response.message.content;
 }
+
+export default completeChat;

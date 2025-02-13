@@ -1,41 +1,50 @@
 import express from 'express';
 import { validate, Joi } from "express-validation";
-import { QuerySchema } from "@shared/QueryShema";
 import requestData from "./elasticsearch";
+import { QuerySchema } from "@shared/QuerySchema";
+import TEAMS from "@shared/Teams";
+import PLAYERS from "@shared/Players";
+import { ActionLocation, PassLength, RunGap } from '@shared/PlayEnums';
+import completeChat from './model';
 
 const api = express.Router();
 
-const teamNameValidation = Joi.string().pattern(/^[A-Z]+$/).min(2).max(3);
-const playerNameValidation = Joi.string().pattern(/^([0-9]{1,2}-)?[A-Za-z]+.[A-Za-z\-]+$/);
+const teamNameValidation = Joi.string().valid(...TEAMS.map(team => team.shortName));
+const playerNameValidation = Joi.string().valid(...PLAYERS.map(player => player.id));
 
 const queryValidator = {
   body: Joi.object({
-    offense_team: teamNameValidation.optional(),
-    offense_players: Joi.array().items(playerNameValidation).max(12).required(),
-    defense_team: teamNameValidation.optional(),
-    defense_players: Joi.array().items(playerNameValidation).max(12).required(),
+    offenseTeam: teamNameValidation.optional(),
+    offensePlayers: Joi.array().items(playerNameValidation).max(12).required(),
+    defenseTeam: teamNameValidation.optional(),
+    defensePlayers: Joi.array().items(playerNameValidation).max(12).required(),
 
-    play_type: Joi.string().valid('pass', 'run').required(),
+    ballLocation: Joi.number().min(0).max(100).optional(),
+    currentDown: Joi.number().min(1).max(4).optional(),
+    downDistance: Joi.number().min(0).max(100).optional(),
+    gameSecondsLeft: Joi.number().min(0).max(3600).optional(),
+
+    playType: Joi.string().valid('pass', 'run').required(),
 
     // Information related to throws
-    pass_data: Joi.alternatives().conditional('play_type', {
+    passData: Joi.alternatives().conditional('playType', {
       is: 'pass',
       then: Joi.object({
-        passing_player: Joi.string().optional(),
-        receiving_player: Joi.string().optional(),
-        pass_length: Joi.string().optional(),
-        pass_location: Joi.string().optional(),
+        passingPlayer: playerNameValidation.optional(),
+        receivingPlayer: playerNameValidation.optional(),
+        passLength: Joi.string().valid(...Object.values(PassLength)).optional(),
+        passLocation: Joi.string().valid(...Object.values(ActionLocation)).optional(),
       }).required(),
       otherwise: Joi.forbidden()
     }),
 
     // Information related to runs
-    run_data: Joi.alternatives().conditional('play_type', {
+    runData: Joi.alternatives().conditional('playType', {
       is: 'run',
       then: Joi.object({
-        rushing_player: Joi.string().optional(),
-        run_location: Joi.string().optional(),
-        run_gap: Joi.string().optional(),
+        rushingPlayer: playerNameValidation.optional(),
+        runLocation: Joi.string().valid(...Object.values(ActionLocation)).optional(),
+        runGap: Joi.string().valid(...Object.values(RunGap)).optional(),
       }).required(),
       otherwise: Joi.forbidden()
     }),
@@ -55,10 +64,10 @@ api.post('/v1',
     requestData(data);
 
     // TODO: Feed content to LLM model
+    let response = completeChat("What is football?", [""]);
 
     // Return information to user
-    let result = "Not Yet Implemented";
-    res.status(200).send(result);
+    res.status(200).send(response);
   }
 )
 

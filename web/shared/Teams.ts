@@ -1,0 +1,41 @@
+export interface Team {
+  label: string,
+  shortName: string,
+  logo: string
+}
+const TEAMS : Team[] = [
+  { label: "Arizona Cardinals", shortName: "ARZ", logo: "u9fltoslqdsyao8cpm0k"},
+  { label: "Atlanta Falcons", shortName: "ATL", logo: "d8m7hzpsbrl6pnqht8op"},
+  { label: "Baltimore Ravens", shortName: "BLT", logo: "ucsdijmddsqcj1i9tddd"},
+  { label: "Buffalo Bills", shortName: "BUF", logo: "giphcy6ie9mxbnldntsf"},
+  { label: "Carolina Panthers", shortName: "CAR", logo: "ervfzgrqdpnc7lh5gqwq"},
+  { label: "Chicago Bears", shortName: "CHI", logo: "ijrplti0kmzsyoaikhv1"},
+  { label: "Cincinnati Bengals", shortName: "CIN", logo: "okxpteoliyayufypqalq"},
+  { label: "Cleveland Browns", shortName: "CLV", logo: "bedyixmmjhszfcx5wv2l"},
+  { label: "Dallas Cowboys", shortName: "DAL", logo: "ieid8hoygzdlmzo0tnf6"},
+  { label: "Denver Broncos", shortName: "DEN", logo: "t0p7m5cjdjy18rnzzqbx"},
+  { label: "Detroit Lions", shortName: "DET", logo: "ocvxwnapdvwevupe4tpr"},
+  { label: "Green Bay Packers", shortName: "GB", logo: "gppfvr7n8gljgjaqux2x"},
+  { label: "Houston Texans", shortName: "HST", logo: "u6camnphqvjc6mku6u3c"},
+  { label: "Indianapolis Colts", shortName: "IND", logo: "ketwqeuschqzjsllbid5"},
+  { label: "Jacksonville Jaguars", shortName: "JAX", logo: "qycbib6ivrm9dqaexryk"},
+  { label: "Kansas City Chiefs", shortName: "KC", logo: "ujshjqvmnxce8m4obmvs"},
+  { label: "Las Vegas Raiders", shortName: "LV", logo: "gzcojbzcyjgubgyb6xf2"},
+  { label: "Los Angeles Chargers", shortName: "LAC", logo: "dhfidtn8jrumakbogeu4"},
+  { label: "Los Angeles Rams", shortName: "LA", logo: "ayvwcmluj2ohkdlbiegi"},
+  { label: "Miami Dolphins", shortName: "MIA", logo: "lits6p8ycthy9to70bnt"},
+  { label: "Minnesota Vikings", shortName: "MIN", logo: "teguylrnqqmfcwxvcmmz"},
+  { label: "New England Patriots", shortName: "NE", logo: "moyfxx3dq5pio4aiftnc"},
+  { label: "New Orleans Saints", shortName: "NO", logo: "grhjkahghjkk17v43hdx"},
+  { label: "New York Giants", shortName: "NYG", logo: "t6mhdmgizi6qhndh8b9p"},
+  { label: "New York Jets", shortName: "NYJ", logo: "vdqo4iiufmdrimkaxslj"},
+  { label: "Philadelphia Eagles", shortName: "PHI", logo: "puhrqgj71gobgdkdo6uq"},
+  { label: "Pittsburgh Steelers", shortName: "PIT", logo: "xujg9t3t4u5nmjgr54wx"},
+  { label: "San Francisco 49ers", shortName: "SF", logo: "dxibuyxbk0b9ua5ih9hn"},
+  { label: "Seattle Seahawks", shortName: "SEA", logo: "gcytzwpjdzbpwnwxincg"},
+  { label: "Tampa Bay Buccaneers", shortName: "TB", logo: "v8uqiualryypwqgvwcih"},
+  { label: "Tennessee Titans", shortName: "TEN", logo: "pln44vuzugjgipyidsre"},
+  { label: "Washington Commanders", shortName: "WAS", logo: "xymxwrxtyj9fhaemhdyd"},
+];
+
+export default TEAMS;
