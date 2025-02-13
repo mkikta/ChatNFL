@@ -1,5 +1,5 @@
 import { Client } from "@elastic/elasticsearch";
-import { QuerySchema } from "@shared/QueryShema";
+import { QuerySchema } from "@shared/QuerySchema";
 
 const client = new Client({
   node: 'http://localhost:9200',

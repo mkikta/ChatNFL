@@ -15,12 +15,18 @@
     "@types/node": "^22.10.10",
     "express": "^4.21.2",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.17.0",
+    "@types/elasticsearch": "^5.0.43",
     "body-parser": "^1.20.3",
     "dotenv": "^16.4.7",
-    "express-validation": "^4.1.1"
+    "express-validation": "^4.1.1",
+    "module-alias": "^2.2.3"
+  },
+  "_moduleAliases": {
+    "@shared": "../shared"
   }
 }
