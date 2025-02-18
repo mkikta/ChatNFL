@@ -5,7 +5,7 @@ import { QuerySchema } from "@shared/QuerySchema";
 import TEAMS from "@shared/Teams";
 import PLAYERS from "@shared/Players";
 import { ActionLocation, PassLength, RunGap } from '@shared/PlayEnums';
-import completeChat from './model';
+import { completeChat, createPrompt } from './model';
 
 const api = express.Router();
 
@@ -63,8 +63,10 @@ api.post('/v1',
     // TODO: Request context from ElasticSearch
     requestData(data);
 
-    // TODO: Feed content to LLM model
-    let response = await completeChat("What is football?", [""]);
+    // TODO: Feed context to LLM model
+    let prompt = createPrompt(data);
+    console.log(prompt)
+    let response = await completeChat(prompt, [""]);
     console.log(response);
     response = response.substring(response.indexOf("</think>")+8);
     // Return information to user

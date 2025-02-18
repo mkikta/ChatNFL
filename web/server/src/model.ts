@@ -1,6 +1,6 @@
 import ollama, { Message as Msg } from 'ollama'
-import { QuerySchema } from "@shared/QuerySchema";
-import { query } from 'express';
+import { QuerySchema, PassData, RunData } from "@shared/QuerySchema";
+import { PlayType, PassLength, ActionLocation, RunGap } from '@shared/PlayEnums';
 
 class Message implements Msg {
     role: string;
@@ -26,19 +26,18 @@ async function completeChat(question: string, context: [string], model: string =
     return response.message.content;
 }
 
+// TODO: implement new query schema fields.
 function createPrompt(querySchema: QuerySchema) {
-    var offenseInfo: String;
-    var defenseInfo: String;
-    var offensePlayerInfo: String;
-    var defensePlayerInfo: String;
-    var playTypeInfo: String;
-    var passDataInfo: String;
-    var runDataInfo: String;
-    var prompt: String;
+    var offenseInfo: string;
+    var defenseInfo: string;
+    var offensePlayerInfo: string;
+    var defensePlayerInfo: string;
+    var playTypeInfo: string;
+    var passDataInfo: string;
+    var runDataInfo: string;
+    var prompt: string;
     
-
     offenseInfo = querySchema.offenseTeam ? "The team on offense is " + querySchema.offenseTeam! + "." : "";
-    
     
     defenseInfo = querySchema.defenseTeam ? "The team on defense is " + querySchema.defenseTeam! + "." : "";
     
@@ -74,6 +73,8 @@ function createPrompt(querySchema: QuerySchema) {
             passDataInfo += " to a teammate"
         }
         passDataInfo += "."
+    } else {
+        passDataInfo = ""
     }
 
     if (querySchema.runData) {
@@ -89,7 +90,60 @@ function createPrompt(querySchema: QuerySchema) {
             runDataInfo += " to the" + querySchema.runData.runGap!;
         }
         runDataInfo += ".";
+    } else {
+        runDataInfo = ""
+    }
+
+    prompt = "What would be the outcome of the play described as follows:";
+    if (offenseInfo) {
+        prompt = prompt + " " + offenseInfo;
+    }
+    if (defenseInfo) {
+        prompt = prompt + " " + defenseInfo;
+    }
+
+    prompt = prompt + " " + offensePlayerInfo + " " + defensePlayerInfo + " " + playTypeInfo;
+    
+    if (passDataInfo) {
+        prompt = prompt + " " + passDataInfo;
+    }
+    if (runDataInfo) {
+        prompt = prompt + " " + runDataInfo;
+    }
+    return prompt;
+}
+
+class TestSchema implements QuerySchema {
+    offenseTeam?: string | undefined;
+    defenseTeam?: string | undefined;
+    offensePlayers: string[];
+    defensePlayers: string[];
+    ballLocation?: number | null | undefined;
+    currentDown?: number | null | undefined;
+    downDistance?: number | null | undefined;
+    gameSecondsLeft?: number | null | undefined;
+    playType: PlayType;
+    passData?: PassData;
+    runData?: RunData;
+
+    constructor(offensePlayers: string[], defensePlayers: string[], playType: PlayType, offenseTeam?: string, defenseTeam?: string, ballLocation?: number, currentDown?: number, downDistance?: number, gameSecondsLeft?: number, passData?: PassData, runData?: RunData) {
+        this.offenseTeam = offenseTeam;
+        this.defenseTeam = defenseTeam;
+        this.offensePlayers = offensePlayers;
+        this.defensePlayers = defensePlayers;
+        this.playType = playType;
+        this.ballLocation = ballLocation;
+        this.currentDown = currentDown;
+        this.downDistance = downDistance;
+        this.gameSecondsLeft = gameSecondsLeft;
+        this.playType = playType;
+        this.passData = passData;
+        this.runData = runData;
     }
 }
 
-export default completeChat;
+//TODO: finish testing this
+var test = TestSchema();
+console.log(createPrompt(test));
+
+export { completeChat, createPrompt };
