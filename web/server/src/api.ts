@@ -3,7 +3,7 @@ import { validate, Joi } from "express-validation";
 import requestData from "./elasticsearch";
 import { QuerySchema } from "@shared/QuerySchema";
 import TEAMS from "@shared/Teams";
-import PLAYERS from "@shared/Players";
+import { PLAYERS } from "@shared/Players";
 import { ActionLocation, PassLength, RunGap } from '@shared/PlayEnums';
 import completeChat from './model';
 

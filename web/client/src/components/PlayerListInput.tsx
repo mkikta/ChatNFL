@@ -1,7 +1,8 @@
 import { Autocomplete, Box, ButtonBase, Grid2, Paper, Stack, styled, Typography } from "@mui/material";
 import { useContext, useState } from "react";
 import { QueryContext } from "../context/QueryContext";
-import { createPlayerAutocompleteProps, idToPlayer} from "./playerAutocompleteHelper";
+import { createPlayerAutocompleteProps } from "./playerAutocompleteHelper";
+import { idToPlayer } from "@shared/Players";
 
 const TypographyStrikethrough = styled(Typography)`
 button:hover & {

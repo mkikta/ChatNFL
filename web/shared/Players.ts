@@ -2760,5 +2760,8 @@ const PLAYERS : Player[] = [
 	{ id: "38701", label: "Greg Zuerlein",  shortName: "G.Zuerlein", headshot: "gzuks9rryzy90fecvi9l" },
 	{ id: "53739", label: "Shane Zylstra",  shortName: "S.Zylstra", headshot: "e6np1mvcmbxp76d7lbqy" },
 ];
-
-export default PLAYERS;
+const idToPlayer : {[key: string] : Player} = {};
+for (const player of PLAYERS) {
+  idToPlayer[player.id] = player;
+}
+export { PLAYERS, idToPlayer };

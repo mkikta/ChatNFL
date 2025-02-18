@@ -1,5 +1,5 @@
 import { AutocompleteRenderInputParams, Box, createFilterOptions, TextField } from "@mui/material";
-import PLAYERS, { Player } from "@shared/Players";
+import { PLAYERS, Player } from "@shared/Players";
 
 const createPlayerAutocompleteProps = (label: string) => ({
   options: PLAYERS,
@@ -29,9 +29,4 @@ const createPlayerAutocompleteProps = (label: string) => ({
   filterOptions: createFilterOptions<Player>({limit: 5})
 });
 
-const idToPlayer : {[key: string] : Player} = {};
-for (const player of PLAYERS) {
-  idToPlayer[player.id] = player;
-}
-
-export { createPlayerAutocompleteProps, idToPlayer }
+export { createPlayerAutocompleteProps };

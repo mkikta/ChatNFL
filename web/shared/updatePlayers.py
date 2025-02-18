@@ -20,5 +20,10 @@ const PLAYERS : Player[] = [""", file=of)
     last_season = int(vals[headers["last_season"]])
     if last_season >= 2024:
       print(f"\t{{ id: \"{vals[headers["nfl_id"]]}\", label: \"{vals[headers["display_name"]]}\",  shortName: \"{vals[headers["short_name"]]}\", headshot: \"{vals[headers["headshot"]].split("/")[-1]}\" }},", sep=",", file=of)
-  print("];\n\nexport default PLAYERS;", file=of)
+  print("""];
+const idToPlayer : {[key: string] : Player} = {};
+for (const player of PLAYERS) {
+  idToPlayer[player.id] = player;
+}
+export { PLAYERS, idToPlayer };""", file=of)
 f.close()
