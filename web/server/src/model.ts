@@ -26,12 +26,15 @@ async function completeChat(question: string, context: [string], model: string =
     return response.message.content;
 }
 
-// TODO: implement new query schema fields.
 function createPrompt(querySchema: QuerySchema) {
     var offenseInfo: string;
     var defenseInfo: string;
     var offensePlayerInfo: string;
     var defensePlayerInfo: string;
+    var ballLocationInfo: string;
+    var downInfo: string;
+    var downDistanceInfo: string;
+    var gameSecondsLeft: string;
     var playTypeInfo: string;
     var passDataInfo: string;
     var runDataInfo: string;
@@ -52,6 +55,36 @@ function createPrompt(querySchema: QuerySchema) {
         defensePlayerInfo += ", " + querySchema.defensePlayers[i];
     }
     defensePlayerInfo += "."
+
+    ballLocationInfo = querySchema.ballLocation ? "The ball is on the " + String(querySchema.ballLocation!) + "." : "";
+    switch (querySchema.currentDown) {
+        case 1: {
+            downInfo = "It is 1st down.";
+            break;
+        }
+
+        case 2: {
+            downInfo = "It is 2nd down.";
+            break;
+        }
+
+        case 3: {
+            downInfo = "It is 3rd down.";
+            break;
+        }
+        
+        case 4: {
+            downInfo = "It is 4th down.";
+            break;
+        }
+
+        default: {
+            downInfo = "";
+        }
+    }
+
+    downDistanceInfo = querySchema.downDistance ? "There are " + String(querySchema.downDistance!) + " yards to go." : "";
+    gameSecondsLeft = querySchema.gameSecondsLeft ? "There are " + String(querySchema.gameSecondsLeft!) + " seconds left in the game." : "";
 
     playTypeInfo = "The play was a " + querySchema.playType;
 
@@ -103,7 +136,23 @@ function createPrompt(querySchema: QuerySchema) {
     }
 
     prompt = prompt + " " + offensePlayerInfo + " " + defensePlayerInfo + " " + playTypeInfo;
+
+    if (ballLocationInfo) {
+        prompt = prompt + " " + ballLocationInfo;
+    }
     
+    if (downInfo) {
+        prompt = prompt + " " + downInfo;
+    }
+
+    if (downDistanceInfo) {
+        prompt = prompt + " " + downDistanceInfo;
+    }
+
+    if (gameSecondsLeft) {
+        prompt = prompt + " " + gameSecondsLeft;
+    }
+
     if (passDataInfo) {
         prompt = prompt + " " + passDataInfo;
     }
@@ -112,38 +161,3 @@ function createPrompt(querySchema: QuerySchema) {
     }
     return prompt;
 }
-
-class TestSchema implements QuerySchema {
-    offenseTeam?: string | undefined;
-    defenseTeam?: string | undefined;
-    offensePlayers: string[];
-    defensePlayers: string[];
-    ballLocation?: number | null | undefined;
-    currentDown?: number | null | undefined;
-    downDistance?: number | null | undefined;
-    gameSecondsLeft?: number | null | undefined;
-    playType: PlayType;
-    passData?: PassData;
-    runData?: RunData;
-
-    constructor(offensePlayers: string[], defensePlayers: string[], playType: PlayType, offenseTeam?: string, defenseTeam?: string, ballLocation?: number, currentDown?: number, downDistance?: number, gameSecondsLeft?: number, passData?: PassData, runData?: RunData) {
-        this.offenseTeam = offenseTeam;
-        this.defenseTeam = defenseTeam;
-        this.offensePlayers = offensePlayers;
-        this.defensePlayers = defensePlayers;
-        this.playType = playType;
-        this.ballLocation = ballLocation;
-        this.currentDown = currentDown;
-        this.downDistance = downDistance;
-        this.gameSecondsLeft = gameSecondsLeft;
-        this.playType = playType;
-        this.passData = passData;
-        this.runData = runData;
-    }
-}
-
-//TODO: finish testing this
-var test = TestSchema();
-console.log(createPrompt(test));
-
-export { completeChat, createPrompt };
