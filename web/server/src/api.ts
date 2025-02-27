@@ -1,7 +1,7 @@
 import express from 'express';
 import { validate, Joi } from "express-validation";
 import requestData from "./elasticsearch";
-import { QuerySchema } from "@shared/QuerySchema";
+import { convertPlayerIdToNames, QuerySchema } from "@shared/QuerySchema";
 import TEAMS from "@shared/Teams";
 import { PLAYERS } from "@shared/Players";
 import { ActionLocation, PassLength, RunGap } from '@shared/PlayEnums';
@@ -58,6 +58,7 @@ api.post('/v1',
 
   async (req, res) => {
     const data = req.body as QuerySchema
+    convertPlayerIdToNames(data);
     console.log(data);
 
     // TODO: Request context from ElasticSearch
