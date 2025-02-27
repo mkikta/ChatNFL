@@ -11,17 +11,21 @@ export interface QuerySchema {
   downDistance?: number|null,
   gameSecondsLeft?: number|null,
   playType: PlayType,
-  passData?: {
-    passingPlayer?: string,
-    receivingPlayer?: string,
-    passLength?: PassLength,
-    passLocation?: ActionLocation,
-  },
-  runData?: {
-    rushingPlayer?: string,
-    runLocation?: ActionLocation,
-    runGap?: RunGap,
-  }
+  passData?: PassData,
+  runData?: RunData
+};
+
+export interface PassData {
+  passingPlayer?: string,
+  receivingPlayer?: string,
+  passLength?: PassLength,
+  passLocation?: ActionLocation
+}
+
+export interface RunData {
+  rushingPlayer?: string,
+  runLocation?: ActionLocation,
+  runGap?: RunGap
 };
 
 const convertPlayerIdToNames = (schema : QuerySchema) => {
