@@ -2,7 +2,8 @@ import { Autocomplete, FormControl, Grid2, InputLabel, MenuItem, Paper, Select, 
 import { useContext } from "react";
 import { QueryContext } from "../context/QueryContext";
 import { ActionLocation, PassLength, PlayType, RunGap } from "@shared/PlayEnums";
-import { createPlayerAutocompleteProps, idToPlayer } from "./playerAutocompleteHelper";
+import { createPlayerAutocompleteProps } from "./playerAutocompleteHelper";
+import { idToPlayer } from "@shared/Players";
 
 
 const ChosenPlayForm = () => {

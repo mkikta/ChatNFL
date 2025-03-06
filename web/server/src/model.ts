@@ -161,3 +161,5 @@ function createPrompt(querySchema: QuerySchema) {
     }
     return prompt;
 }
+
+export {createPrompt, completeChat};
