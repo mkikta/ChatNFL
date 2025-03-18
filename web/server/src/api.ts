@@ -1,11 +1,11 @@
 import express from 'express';
 import { validate, Joi } from "express-validation";
 import requestData from "./elasticsearch";
-import { QuerySchema } from "@shared/QuerySchema";
+import { convertPlayerIdToNames, QuerySchema } from "@shared/QuerySchema";
 import TEAMS from "@shared/Teams";
-import PLAYERS from "@shared/Players";
+import { PLAYERS } from "@shared/Players";
 import { ActionLocation, PassLength, RunGap } from '@shared/PlayEnums';
-import completeChat from './model';
+import { completeChat, createPrompt } from './model';
 
 const api = express.Router();
 
@@ -56,16 +56,20 @@ api.post('/v1',
   // @ts-ignore
   validate(queryValidator),
 
-  (req, res) => {
+  async (req, res) => {
     const data = req.body as QuerySchema
+    convertPlayerIdToNames(data);
     console.log(data);
 
     // TODO: Request context from ElasticSearch
     requestData(data);
 
-    // TODO: Feed content to LLM model
-    let response = completeChat("What is football?", [""]);
-
+    // TODO: Feed context to LLM model
+    let prompt = createPrompt(data);
+    console.log(prompt)
+    let response = await completeChat(prompt, [""]);
+    console.log(response);
+    response = response.substring(response.indexOf("</think>")+8);
     // Return information to user
     res.status(200).send(response);
   }
