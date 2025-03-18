@@ -14,7 +14,7 @@ const Form = () => {
   const responseContext = useContext(ResponseContext);
   return (
   <Stack direction="column" justifyContent="space-between" alignContent="center" height="100%">
-    <Typography textAlign={"center"} variant="h2">
+    <Typography textAlign={"center"} variant="h2" color="white">
       ChatNFL
     </Typography>
     <Stack direction="column" alignContent="center" spacing={3}>
