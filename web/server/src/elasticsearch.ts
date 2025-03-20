@@ -10,31 +10,51 @@ const client = new Client({
 const requestData = async (query: QuerySchema) => {
   // client.search() api docs: https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#_search
 
-  // example get pbp
   const pbpRes = await client.search({
     index: 'pbp',
-    size: 20,
-  });
-  console.log(pbpRes.hits.hits[0]);
-
-  // example get player
-  const res = await client.search({
-    index: 'players',
-    size: 20,
+    size: 10, 
     body: {
       query: {
-        match: {
-          "weight": "256"
+        function_score: {
+          query: {
+            match_all: {}
+          },
+          functions: [
+            {
+              script_score: {
+                script: {
+                  source: `
+                    int matches = 0;
+                    if (doc['offense_players'].size() > 0) {
+                      String[] storedIds = doc['offense_players'].value.split(";");
+                      for (String id : params.inputIds) {
+                        if (Arrays.asList(storedIds).contains(id)) {
+                          matches++;
+                        }
+                      }
+                    }
+                    return matches;
+                  `,
+                  params: {
+                    storedIds: query.offensePlayers
+                  }
+                }
+              }
+            }
+          ],
+          boost_mode: "replace"
         }
       }
     }
   });
-  console.log(res.hits.hits[0]);
 
-  // then format the data in some way to prepare it for the llm
-  return "";
+  var context: String[] = [];
+
+  for (var hit in pbpRes.hits.hits) {
+    context.push(String(hit))
+  }
+
+  return context;
 };
-
-requestData({} as QuerySchema);
 
 export default requestData;

@@ -12,7 +12,7 @@ class Message implements Msg {
 }
 
 // Given a user question and a list of context, return the model's response.
-async function completeChat(question: string, context: [string], model: string = 'deepseek-r1:1.5b') {
+async function completeChat(question: string, context: String[], model: string = 'deepseek-r1:1.5b') {
     var messages: [Message];
     messages = [new Message("system", 'You are a coaching assistant for an NFL team. You are very knowledgeable on NFL players, plays, and game histories. You respond with helpful and CONCISE suggestions to users inquiring about the outcome of plays.')]
     messages.push(new Message('user', question))

@@ -62,12 +62,12 @@ api.post('/v1',
     console.log(data);
 
     // TODO: Request context from ElasticSearch
-    requestData(data);
+    var context: String[] = await requestData(data);
 
     // TODO: Feed context to LLM model
     let prompt = createPrompt(data);
     console.log(prompt)
-    let response = await completeChat(prompt, [""]);
+    let response = await completeChat(prompt, context);
     console.log(response);
     response = response.substring(response.indexOf("</think>")+8);
     // Return information to user
