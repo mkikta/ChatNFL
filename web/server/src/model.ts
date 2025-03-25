@@ -86,7 +86,7 @@ function createPrompt(querySchema: QuerySchema) {
     downDistanceInfo = querySchema.downDistance ? "There are " + String(querySchema.downDistance!) + " yards to go." : "";
     gameSecondsLeft = querySchema.gameSecondsLeft ? "There are " + String(querySchema.gameSecondsLeft!) + " seconds left in the game." : "";
 
-    playTypeInfo = "The play was a " + querySchema.playType;
+    playTypeInfo = "The play was a " + querySchema.playType + ".";
 
     if (querySchema.passData) {
         if (querySchema.passData.passingPlayer) {
@@ -95,10 +95,10 @@ function createPrompt(querySchema: QuerySchema) {
             passDataInfo = "The ball was passed";
         }
         if (querySchema.passData.passLength) {
-            passDataInfo += " for " + querySchema.passData.passLength! + " yards";
+            passDataInfo += " " + querySchema.passData.passLength!;
         }
         if (querySchema.passData.passLocation) {
-            passDataInfo += querySchema.passData.passLocation!;
+            passDataInfo += " " + querySchema.passData.passLocation!;
         }
         if (querySchema.passData.receivingPlayer) {
             passDataInfo += " to " + querySchema.passData.receivingPlayer!

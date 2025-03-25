@@ -57,20 +57,18 @@ api.post('/v1',
   validate(queryValidator),
 
   async (req, res) => {
-    const data = req.body as QuerySchema
+    const data = req.body as QuerySchema;
+    var context: String[] = await requestData(data);
+    for (const c of context) {
+      console.log(c + "\n\n");
+    }
     convertPlayerIdToNames(data);
     console.log(data);
-
-    // TODO: Request context from ElasticSearch
-    var context: String[] = await requestData(data);
-
-    // TODO: Feed context to LLM model
     let prompt = createPrompt(data);
     console.log(prompt)
     let response = await completeChat(prompt, context);
     console.log(response);
     response = response.substring(response.indexOf("</think>")+8);
-    // Return information to user
     res.status(200).send(response);
   }
 )

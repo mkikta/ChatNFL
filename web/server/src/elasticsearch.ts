@@ -10,39 +10,22 @@ const client = new Client({
 const requestData = async (query: QuerySchema) => {
   // client.search() api docs: https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#_search
 
+  var queryTxt: string = "(*" + query.offensePlayers[0] + "*)";
+  for (let i = 1; i < query.offensePlayers.length; i++) {
+    queryTxt = queryTxt + " OR (*" + String(query.offensePlayers[i]) + "*)"
+  }
+  for (var player in query.defensePlayers) {
+    queryTxt = queryTxt + " OR (*" + String(player) + "*)"
+  }
+
   const pbpRes = await client.search({
     index: 'pbp',
     size: 10, 
     body: {
       query: {
-        function_score: {
-          query: {
-            match_all: {}
-          },
-          functions: [
-            {
-              script_score: {
-                script: {
-                  source: `
-                    int matches = 0;
-                    if (doc['offense_players'].size() > 0) {
-                      String[] storedIds = doc['offense_players'].value.split(";");
-                      for (String id : params.inputIds) {
-                        if (Arrays.asList(storedIds).contains(id)) {
-                          matches++;
-                        }
-                      }
-                    }
-                    return matches;
-                  `,
-                  params: {
-                    storedIds: query.offensePlayers
-                  }
-                }
-              }
-            }
-          ],
-          boost_mode: "replace"
+        query_string: {
+          fields: ["players_on_play"],
+          query: queryTxt
         }
       }
     }
@@ -50,10 +33,13 @@ const requestData = async (query: QuerySchema) => {
 
   var context: String[] = [];
 
-  for (var hit in pbpRes.hits.hits) {
-    context.push(String(hit))
-  }
+  const hits = pbpRes.hits.hits;
 
+  for (const hit of hits) {
+    const source = hit._source as {'desc': string};
+    context.push("The result of a similar play was: " + source.desc);
+  }
+  
   return context;
 };
 
