@@ -20,7 +20,7 @@ const requestData = async (query: QuerySchema) => {
 
   const res = await client.search({
     index: 'pbp',
-    size: 10,
+    size: 5,
     body: {
       query: {
         bool: {
@@ -35,6 +35,22 @@ const requestData = async (query: QuerySchema) => {
               query_string: {
                 fields: ["posteam"],
                 query: query.offenseTeam!
+              }
+            },
+            {
+              range: {
+                ["game_seconds_remaining"]: {
+                  gte: query.gameSecondsLeft! - 120,
+                  lte: query.gameSecondsLeft! + 120
+                }
+              }
+            },
+            {
+              range: {
+                ["yrdstogo"]: {
+                  gte: query.downDistance! - 2,
+                  lte: query.downDistance! + 2
+                }
               }
             }
           ]
