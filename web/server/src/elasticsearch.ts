@@ -91,7 +91,7 @@ const requestData = async (query: QuerySchema) => {
 
   for (const hit of hits) {
     const source = hit._source as {'desc': string};
-    context.push("The result of a similar play was: " + source.desc);
+    context.push(source.desc);
   }
   
   return context;
