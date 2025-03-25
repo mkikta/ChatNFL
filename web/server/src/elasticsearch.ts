@@ -40,16 +40,16 @@ const requestData = async (query: QuerySchema) => {
             {
               range: {
                 ["game_seconds_remaining"]: {
-                  gte: query.gameSecondsLeft! - 120,
-                  lte: query.gameSecondsLeft! + 120
+                  gte: query.gameSecondsLeft! - 150,
+                  lte: query.gameSecondsLeft! + 150
                 }
               }
             },
             {
               range: {
                 ["yrdstogo"]: {
-                  gte: query.downDistance! - 2,
-                  lte: query.downDistance! + 2
+                  gte: query.downDistance! - 5,
+                  lte: query.downDistance! + 5
                 }
               }
             }
