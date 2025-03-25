@@ -78,6 +78,30 @@ const requestData = async (query: QuerySchema) => {
                 fields: ["play_type"],
                 query: query.playType
               }
+            },
+            {
+              query_string: {
+                fields: ["pass_length"],
+                query: query.passData?.passLength ?? ""
+              }
+            },
+            {
+              query_string: {
+                fields: ["pass_location"],
+                query: query.passData?.passLocation ?? ""
+              }
+            },
+            {
+              query_string: {
+                fields: ["run_location"],
+                query: query.runData?.runLocation ?? ""
+              }
+            },
+            {
+              query_string: {
+                fields: ["run_gap"],
+                query: query.runData?.runGap ?? ""
+              }
             }
           ]
         }
