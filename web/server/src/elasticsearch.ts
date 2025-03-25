@@ -10,31 +10,49 @@ const client = new Client({
 const requestData = async (query: QuerySchema) => {
   // client.search() api docs: https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#_search
 
-  // example get pbp
-  const pbpRes = await client.search({
-    index: 'pbp',
-    size: 20,
-  });
-  console.log(pbpRes.hits.hits[0]);
+  var playersQuery: string = "(*" + query.offensePlayers[0] + "*)";
+  for (let i = 1; i < query.offensePlayers.length; i++) {
+    playersQuery = playersQuery + " OR (*" + String(query.offensePlayers[i]) + "*)"
+  }
+  for (var player in query.defensePlayers) {
+    playersQuery = playersQuery + " OR (*" + String(player) + "*)"
+  }
 
-  // example get player
   const res = await client.search({
-    index: 'players',
-    size: 20,
+    index: 'pbp',
+    size: 10,
     body: {
       query: {
-        match: {
-          "weight": "256"
+        bool: {
+          should: [
+            {
+              query_string: {
+                fields: ["players_on_play"],
+                query: playersQuery
+              }
+            },
+            {
+              query_string: {
+                fields: ["posteam"],
+                query: query.offenseTeam!
+              }
+            }
+          ]
         }
       }
     }
-  });
-  console.log(res.hits.hits[0]);
+  })
 
-  // then format the data in some way to prepare it for the llm
-  return "";
+  var context: String[] = [];
+
+  const hits = res.hits.hits;
+
+  for (const hit of hits) {
+    const source = hit._source as {'desc': string};
+    context.push("The result of a similar play was: " + source.desc);
+  }
+  
+  return context;
 };
-
-requestData({} as QuerySchema);
 
 export default requestData;
