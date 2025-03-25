@@ -10,30 +10,42 @@ const client = new Client({
 const requestData = async (query: QuerySchema) => {
   // client.search() api docs: https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#_search
 
-  var queryTxt: string = "(*" + query.offensePlayers[0] + "*)";
+  var playersQuery: string = "(*" + query.offensePlayers[0] + "*)";
   for (let i = 1; i < query.offensePlayers.length; i++) {
-    queryTxt = queryTxt + " OR (*" + String(query.offensePlayers[i]) + "*)"
+    playersQuery = playersQuery + " OR (*" + String(query.offensePlayers[i]) + "*)"
   }
   for (var player in query.defensePlayers) {
-    queryTxt = queryTxt + " OR (*" + String(player) + "*)"
+    playersQuery = playersQuery + " OR (*" + String(player) + "*)"
   }
 
-  const pbpRes = await client.search({
+  const res = await client.search({
     index: 'pbp',
-    size: 10, 
+    size: 10,
     body: {
       query: {
-        query_string: {
-          fields: ["players_on_play"],
-          query: queryTxt
+        bool: {
+          should: [
+            {
+              query_string: {
+                fields: ["players_on_play"],
+                query: playersQuery
+              }
+            },
+            {
+              query_string: {
+                fields: ["posteam"],
+                query: query.offenseTeam!
+              }
+            }
+          ]
         }
       }
     }
-  });
+  })
 
   var context: String[] = [];
 
-  const hits = pbpRes.hits.hits;
+  const hits = res.hits.hits;
 
   for (const hit of hits) {
     const source = hit._source as {'desc': string};
