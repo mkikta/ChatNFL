@@ -38,6 +38,12 @@ const requestData = async (query: QuerySchema) => {
               }
             },
             {
+              query_string: {
+                fields: ["defteam"],
+                query: query.defenseTeam!
+              }
+            },
+            {
               range: {
                 ["game_seconds_remaining"]: {
                   gte: query.gameSecondsLeft! - 150,
@@ -47,10 +53,30 @@ const requestData = async (query: QuerySchema) => {
             },
             {
               range: {
+                ["yardline_100"]: {
+                  gte: query.ballLocation! - 10,
+                  lte: query.ballLocation! + 10
+                }
+              }
+            },
+            {
+              range: {
                 ["yrdstogo"]: {
                   gte: query.downDistance! - 5,
                   lte: query.downDistance! + 5
                 }
+              }
+            },
+            {
+              query_string: {
+                fields: ["down"],
+                query: String(query.currentDown!)
+              }
+            },
+            {
+              query_string: {
+                fields: ["play_type"],
+                query: query.playType
               }
             }
           ]
