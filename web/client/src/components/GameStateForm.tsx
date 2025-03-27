@@ -1,6 +1,7 @@
 import { FormControl, Grid2, InputAdornment, InputLabel, MenuItem, Paper, Select, Slider, TextField, Typography } from "@mui/material";
 import { useContext } from "react";
 import { QueryContext } from "../context/QueryContext";
+import FootballSlider from "./FootballSlider";
 
 const GameStateForm = () => {
   const queryContext = useContext(QueryContext);
@@ -14,8 +15,8 @@ const GameStateForm = () => {
       <Grid2 size={6}>
       </Grid2>
       <Grid2 size={12}>
-        <Slider
-          value={[100-(queryContext?.data.ballLocation??0), 100-(queryContext?.data.ballLocation??0)+(queryContext?.data.downDistance??0)]}
+        <FootballSlider
+          value={[100-(queryContext?.data.ballLocation??50), 100-(queryContext?.data.ballLocation??30)+(queryContext?.data.downDistance??0)]}
           onChange={(_, newVal) => {
             const [ballLocation, targetLocation] = newVal as number[];
             queryContext!.setBallLocation(100-ballLocation);
