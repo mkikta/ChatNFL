@@ -40,7 +40,8 @@ const Form = () => {
         variant="contained"
         onClick={async () => {
           const response = await queryPlay(queryContext?.data!);
-          responseContext?.setResponse(response);
+          
+          responseContext?.setResponse(response.split("**"));
         }}
       >Generate</Button>
     </Stack>
