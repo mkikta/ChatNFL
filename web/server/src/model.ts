@@ -1,4 +1,4 @@
-import ollama, { Message as Msg } from 'ollama'
+import {Ollama, Message as Msg } from 'ollama'
 import { QuerySchema, PassData, RunData } from "@shared/QuerySchema";
 import { PlayType, PassLength, ActionLocation, RunGap } from '@shared/PlayEnums';
 
@@ -10,9 +10,13 @@ class Message implements Msg {
         this.content = content
     }
 }
+const ollama = new Ollama({
+    host: process.env.OLLAMA_HOST
+})
 
 // Given a user question and a list of context, return the model's response.
-async function completeChat(question: string, context: String[], model: string = 'deepseek-r1:1.5b') {
+async function completeChat(question: string, context: String[], model: string = '') {
+    model = (model != '') ? model : process.env.OLLAMA_MODEL as string;
     var messages: [Message];
     messages = [new Message("system", 'You are a coachuing assistant for an NFL team. You have complete knowledge of NFL players, \
          plays, and game histories. You respond with helpful and CONCISE suggestions to users inquiring about the outcome of plays, \
