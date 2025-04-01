@@ -5,11 +5,11 @@ To run the project, first ensure that you have ElasticSearch, Docker, npm, and O
 1. Run the docker daemon.
 2. Run elasticsearch locally:
      ```bash
-     curl -fsSL https://elastic.co/start-local | sh.
+     curl -fsSL https://elastic.co/start-local | sh
      ```
 4. Run Deepseek-r1 on ollama:
    ```bash
-   ollama run deepseek-r1:1.5b.
+   ollama run deepseek-r1:1.5b
    ```
    This requires about 2GB of disk space.
 5. Run the client:
