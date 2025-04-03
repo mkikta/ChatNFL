@@ -40,6 +40,8 @@ const ChosenPlayForm = () => {
 
 const PassPlay = () => {
   const queryContext = useContext(QueryContext);
+  const offensePlayerIds = queryContext?.data.offensePlayers || [];
+  const offensePlayerOptions = offensePlayerIds.map((id) => idToPlayer[id]);
   return (<>
     <Grid2 size={4}>
       <FormControl fullWidth>
@@ -83,6 +85,8 @@ const PassPlay = () => {
     <Grid2 size={6}>
       <Autocomplete
         {...createPlayerAutocompleteProps("Passing Player")}
+        options={offensePlayerOptions}
+        getOptionLabel={(player) => player?.shortName || ""}
         value={queryContext?.data.passData?.passingPlayer ? idToPlayer[queryContext?.data.passData?.passingPlayer] : null}
         onChange={(_, newValue) => {
           if (queryContext) {
@@ -94,6 +98,8 @@ const PassPlay = () => {
     <Grid2 size={6}>
       <Autocomplete
         {...createPlayerAutocompleteProps("Receiving Player")}
+        options={offensePlayerOptions}
+        getOptionLabel={(player) => player?.shortName || ""}
         value={queryContext?.data.passData?.receivingPlayer ? idToPlayer[queryContext?.data.passData?.receivingPlayer] : null}
         onChange={(_, newValue) => {
           if (queryContext) {
@@ -107,6 +113,8 @@ const PassPlay = () => {
 
 const RunPlay = () => {
   const queryContext = useContext(QueryContext);
+  const offensePlayerIds = queryContext?.data.offensePlayers || [];
+  const offensePlayerOptions = offensePlayerIds.map((id) => idToPlayer[id]);
   return (<>
     <Grid2 size={4}>
       <FormControl fullWidth>
@@ -151,6 +159,8 @@ const RunPlay = () => {
     <Grid2 size={12}>
       <Autocomplete
         {...createPlayerAutocompleteProps("Rushing Player")}
+        options={offensePlayerOptions}
+        getOptionLabel={(player) => player?.shortName || ""}
         value={queryContext?.data.runData?.rushingPlayer ? idToPlayer[queryContext?.data.runData?.rushingPlayer] : null}
         onChange={(_, newValue) => {
           if (queryContext) {
