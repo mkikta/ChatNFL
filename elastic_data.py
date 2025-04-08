@@ -3,7 +3,7 @@ import csv
 from elasticsearch import Elasticsearch, helpers
 
 # CHANGE THE SECOND STRING HERE TO YOUR PASSWORD FROM elastic-start-local/.env
-ELASTIC_AUTH = ('elastic', 'Sy119GAl')
+ELASTIC_AUTH = ('elastic', 'wViIQ9wz')
 EXCLUDE_COLUMNS = ['old_game_id']
 MIN_YEAR = 2020
 
@@ -70,6 +70,6 @@ if __name__ == '__main__':
 			merged_pbp.append(row)
 	print(f"Successfully merged {len(merged_pbp)} rows.")
 	try_load_data(client, 'pbp', merged_pbp)
-
+	try_load_data(client, 'pbp_participation', merged_pbp)
 	# load data/players.csv
 	try_load_data(client, 'players', read_csv('data/players.csv'))

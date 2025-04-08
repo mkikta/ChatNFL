@@ -1,9 +1,12 @@
 import { Client } from "@elastic/elasticsearch";
 import { QuerySchema } from "@shared/QuerySchema";
+import * as fs from 'fs';
+
+const filename = 'merged_pbp.txt';
 
 const client = new Client({
   node: 'http://localhost:9200',
-  auth: { username: process.env.ELASTICSEARCH_USERNAME as string, password: process.env.ELASTICSEARCH_PASSWORD as string },
+  auth: { username: process.env.ELASTICSEARCH_USERNAME as string, password: "wViIQ9wz" },
 });
 
 // use query to search for data using client
@@ -13,9 +16,17 @@ const requestData = async (query: QuerySchema) => {
   // example get pbp
   const pbpRes = await client.search({
     index: 'pbp',
-    size: 20,
+    size: 10,
   });
-  console.log(pbpRes.hits.hits[0]);
+  const pbpResString = pbpRes.hits.hits.map((element) => JSON.stringify(element));
+  console.log("hi")
+  fs.writeFileSync(filename, pbpResString.join('\n'), 'utf8');
+  //example get pbp_part
+  // const pbpPartRes = await client.search({
+  //   index: 'pbp_participation',
+  //   size: 10,
+  // });
+  // console.log(pbpPartRes.hits.hits);
 
   // example get player
   const res = await client.search({
@@ -29,7 +40,7 @@ const requestData = async (query: QuerySchema) => {
       }
     }
   });
-  console.log(res.hits.hits[0]);
+  // console.log(res.hits);
 
   // then format the data in some way to prepare it for the llm
   return "";
