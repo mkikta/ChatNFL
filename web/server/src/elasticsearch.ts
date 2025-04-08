@@ -13,39 +13,115 @@ const client = new Client({
 const requestData = async (query: QuerySchema) => {
   // client.search() api docs: https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#_search
 
-  // example get pbp
-  const pbpRes = await client.search({
-    index: 'pbp',
-    size: 10,
-  });
-  const pbpResString = pbpRes.hits.hits.map((element) => JSON.stringify(element));
-  console.log("hi")
-  fs.writeFileSync(filename, pbpResString.join('\n'), 'utf8');
-  //example get pbp_part
-  // const pbpPartRes = await client.search({
-  //   index: 'pbp_participation',
-  //   size: 10,
-  // });
-  // console.log(pbpPartRes.hits.hits);
+  var playersQuery: string = "(*" + query.offensePlayers[0] + "*)";
+  for (let i = 1; i < query.offensePlayers.length; i++) {
+    playersQuery = playersQuery + " OR (*" + String(query.offensePlayers[i]) + "*)"
+  }
+  for (var player in query.defensePlayers) {
+    playersQuery = playersQuery + " OR (*" + String(player) + "*)"
+  }
 
-  // example get player
   const res = await client.search({
-    index: 'players',
-    size: 20,
+    index: 'pbp',
+    size: 5,
     body: {
       query: {
-        match: {
-          "weight": "256"
+        bool: {
+          should: [
+            {
+              query_string: {
+                fields: ["players_on_play"],
+                query: playersQuery
+              }
+            },
+            {
+              query_string: {
+                fields: ["posteam"],
+                query: query.offenseTeam!
+              }
+            },
+            {
+              query_string: {
+                fields: ["defteam"],
+                query: query.defenseTeam!
+              }
+            },
+            {
+              range: {
+                ["game_seconds_remaining"]: {
+                  gte: query.gameSecondsLeft! - 150,
+                  lte: query.gameSecondsLeft! + 150
+                }
+              }
+            },
+            {
+              range: {
+                ["yardline_100"]: {
+                  gte: query.ballLocation! - 10,
+                  lte: query.ballLocation! + 10
+                }
+              }
+            },
+            {
+              range: {
+                ["yrdstogo"]: {
+                  gte: query.downDistance! - 5,
+                  lte: query.downDistance! + 5
+                }
+              }
+            },
+            {
+              query_string: {
+                fields: ["down"],
+                query: String(query.currentDown!)
+              }
+            },
+            {
+              query_string: {
+                fields: ["play_type"],
+                query: query.playType
+              }
+            },
+            {
+              query_string: {
+                fields: ["pass_length"],
+                query: query.passData?.passLength ?? ""
+              }
+            },
+            {
+              query_string: {
+                fields: ["pass_location"],
+                query: query.passData?.passLocation ?? ""
+              }
+            },
+            {
+              query_string: {
+                fields: ["run_location"],
+                query: query.runData?.runLocation ?? ""
+              }
+            },
+            {
+              query_string: {
+                fields: ["run_gap"],
+                query: query.runData?.runGap ?? ""
+              }
+            }
+          ]
         }
       }
     }
-  });
-  // console.log(res.hits);
+  })
 
-  // then format the data in some way to prepare it for the llm
-  return "";
+  var context: String[] = [];
+
+  const hits = res.hits.hits;
+
+  for (const hit of hits) {
+    const source = hit._source as {'desc': string};
+    context.push(source.desc);
+  }
+  
+  return context;
 };
-
-requestData({} as QuerySchema);
 
 export default requestData;
