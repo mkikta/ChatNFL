@@ -30,17 +30,18 @@ const PlayerListInput = ({offense} : PlayerListInputProps) => {
         inputValue={rawValue}
         onInputChange={(_, newValue) => setRawValue(newValue)}
         onChange={(_, newValue) => {
-          if (queryContext) {
+          if (queryContext && newValue) {
             setRawValue("");
-            (offense ? queryContext.setOffensePlayers : queryContext.setDefensePlayers)((prev) => {
-              if (newValue) {
-                return [...prev, newValue.id]
-              } else {
-                return prev;
-              }
-            })
+            const current = queryContext.data[targetField];
+            if (current.length < 11) {
+              (offense ? queryContext.setOffensePlayers : queryContext.setDefensePlayers)([
+                ...current,
+                newValue.id,
+              ]);
+            }
           }
         }}
+        disabled={(queryContext?.data[targetField] || []).length >= 11}
       />
       <Box sx={{height: '200px', overflowX: "clip", overflowY: "scroll"}}>
         <Grid2 container>
