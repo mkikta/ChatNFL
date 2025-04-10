@@ -15,7 +15,7 @@ const ollama = new Ollama({
 })
 
 // Given a user question and a list of context, return the model's response.
-async function completeChat(question: string, context: String[], model: string = '') {
+async function completeChat(question: string, context: String[], model: string = 'deepseek-r1:1.5b') {
     model = (model != '') ? model : process.env.OLLAMA_MODEL as string;
     var messages: [Message];
     messages = [new Message("system", 'You are a coachuing assistant for an NFL team. You have complete knowledge of NFL players, \
