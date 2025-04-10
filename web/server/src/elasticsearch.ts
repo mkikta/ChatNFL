@@ -1,9 +1,12 @@
 import { Client } from "@elastic/elasticsearch";
 import { QuerySchema } from "@shared/QuerySchema";
+import * as fs from 'fs';
+
+const filename = 'merged_pbp.txt';
 
 const client = new Client({
   node: 'http://localhost:9200',
-  auth: { username: process.env.ELASTICSEARCH_USERNAME as string, password: process.env.ELASTICSEARCH_PASSWORD as string },
+  auth: { username: process.env.ELASTICSEARCH_USERNAME as string, password: "wViIQ9wz" },
 });
 
 // use query to search for data using client
@@ -20,7 +23,7 @@ const requestData = async (query: QuerySchema) => {
 
   const res = await client.search({
     index: 'pbp',
-    size: 10,
+    size: 5,
     body: {
       query: {
         bool: {
@@ -36,6 +39,72 @@ const requestData = async (query: QuerySchema) => {
                 fields: ["posteam"],
                 query: query.offenseTeam!
               }
+            },
+            {
+              query_string: {
+                fields: ["defteam"],
+                query: query.defenseTeam!
+              }
+            },
+            {
+              range: {
+                ["game_seconds_remaining"]: {
+                  gte: query.gameSecondsLeft! - 150,
+                  lte: query.gameSecondsLeft! + 150
+                }
+              }
+            },
+            {
+              range: {
+                ["yardline_100"]: {
+                  gte: query.ballLocation! - 10,
+                  lte: query.ballLocation! + 10
+                }
+              }
+            },
+            {
+              range: {
+                ["yrdstogo"]: {
+                  gte: query.downDistance! - 5,
+                  lte: query.downDistance! + 5
+                }
+              }
+            },
+            {
+              query_string: {
+                fields: ["down"],
+                query: String(query.currentDown!)
+              }
+            },
+            {
+              query_string: {
+                fields: ["play_type"],
+                query: query.playType
+              }
+            },
+            {
+              query_string: {
+                fields: ["pass_length"],
+                query: query.passData?.passLength ?? ""
+              }
+            },
+            {
+              query_string: {
+                fields: ["pass_location"],
+                query: query.passData?.passLocation ?? ""
+              }
+            },
+            {
+              query_string: {
+                fields: ["run_location"],
+                query: query.runData?.runLocation ?? ""
+              }
+            },
+            {
+              query_string: {
+                fields: ["run_gap"],
+                query: query.runData?.runGap ?? ""
+              }
             }
           ]
         }
@@ -49,7 +118,7 @@ const requestData = async (query: QuerySchema) => {
 
   for (const hit of hits) {
     const source = hit._source as {'desc': string};
-    context.push("The result of a similar play was: " + source.desc);
+    context.push(source.desc);
   }
   
   return context;
