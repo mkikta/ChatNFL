@@ -3,7 +3,7 @@ import csv
 from elasticsearch import Elasticsearch, helpers
 
 # CHANGE THE SECOND STRING HERE TO YOUR PASSWORD FROM elastic-start-local/.env
-ELASTIC_AUTH = ('elastic', 'wViIQ9wz')
+ELASTIC_AUTH = ('elastic', 'password_goes_here')
 EXCLUDE_COLUMNS = ['old_game_id']
 MIN_YEAR = 2020
 

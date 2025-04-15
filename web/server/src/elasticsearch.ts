@@ -6,7 +6,7 @@ const filename = 'merged_pbp.txt';
 
 const client = new Client({
   node: 'http://localhost:9200',
-  auth: { username: process.env.ELASTICSEARCH_USERNAME as string, password: "wViIQ9wz" },
+  auth: { username: process.env.ELASTICSEARCH_USERNAME as string, password: process.env.ELASTICSEARCH_PASSWORD as string },
 });
 
 // use query to search for data using client
